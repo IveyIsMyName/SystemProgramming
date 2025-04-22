@@ -4,8 +4,8 @@ using namespace std;
 #define MIN_TANK_CAPACITY 20
 #define MAX_TANK_CAPACITY 120
 
-#define MIN_CONSUMPTION	5
-#define MAX_CONSUMPTION 30
+#define MIN_CONSUMPTION	3
+#define MAX_CONSUMPTION 25
 #define BASE_CONSUMPTION 10
 
 class Tank
@@ -56,47 +56,71 @@ public:
 
 class Engine
 {
-	double consumption_per_sec;
+	const double CONSUMPTION; //расход на 100 км.
+	const double DEFAULT_CONSUMPTION_PER_SECOND;
+	double consumption_per_second;
+	bool is_started;
 public:
-	const double CONSUMPTION_PER_100KM;
-
-	Engine(double consumption) : CONSUMPTION_PER_100KM
-	(
-		consumption < MIN_CONSUMPTION ? MIN_CONSUMPTION :
-		consumption > MAX_CONSUMPTION ? MAX_CONSUMPTION :
-		consumption
-	)
+	double get_consumption_per_second()const
 	{
-		consumption_per_sec = (CONSUMPTION_PER_100KM >= BASE_CONSUMPTION) ? CONSUMPTION_PER_100KM * 0.00003 : 0.0003;
-		cout << "Engine is started" << endl;
+		return consumption_per_second;
+	}
+	Engine(double consumption) :
+		CONSUMPTION
+		(
+			consumption < MIN_CONSUMPTION ? MIN_CONSUMPTION :
+			consumption > MAX_CONSUMPTION ? MAX_CONSUMPTION :
+			consumption
+		),
+		DEFAULT_CONSUMPTION_PER_SECOND(CONSUMPTION * 3e-5),
+		consumption_per_second(DEFAULT_CONSUMPTION_PER_SECOND)
+	{
+		cout << "Engine is ready" << endl;
 	}
 	~Engine()
 	{
-		cout << "Engine is stopped" << endl;
+		cout << "Engine is over" << endl;
 	}
-	
+	void start()
+	{
+		is_started = true;
+	}
+	void stop()
+	{
+		is_started = false;
+	}
+	bool started()const
+	{
+		return is_started;
+	}
 	void info()const
 	{
-		cout << "Consumption per 100 km:\t" << CONSUMPTION_PER_100KM << " liters\n";
-		cout << "Consumption per second:\t" << consumption_per_sec << " liters\n";
+		cout << "Consumption: " << CONSUMPTION << " liters/100km\n";
+		cout << "Consumption per second: " << DEFAULT_CONSUMPTION_PER_SECOND << " liters/s\n";
+		cout << "Consumption: " << consumption_per_second << " liters/s\n";
 	}
 };
+
+//#define TANK_CHECK
+//#define ENGINE_CHECK
 void main()
 {
 	setlocale(LC_ALL, "");
-	/*Tank tank(80);
+#ifdef TANK_CHECK
+	Tank tank(80);
 	double fuel;
 	do
 	{
 		cout << "На сколько запрявляемся? "; cin >> fuel;
 		tank.fill(fuel);
 		tank.info();
-	} while (true);*/
-	
-	Engine min_engine(5);
-	min_engine.info();
-	Engine base_engine(10);
-	base_engine.info();
-	Engine max_engine(30);
-	max_engine.info();
+	} while (true);
+#endif // DEBUG
+
+#ifdef ENGINE_CHECK
+	Engine engine(10);
+	engine.info();
+#endif // ENGINE_CHECK
+
+
 }
