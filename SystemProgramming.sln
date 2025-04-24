@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Car", "Car\Car.vcxproj", "{62A232AB-1F0C-490C-B9C7-82F38DC4842D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Threads", "Threads\Threads.vcxproj", "{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{62A232AB-1F0C-490C-B9C7-82F38DC4842D}.Release|x64.Build.0 = Release|x64
 		{62A232AB-1F0C-490C-B9C7-82F38DC4842D}.Release|x86.ActiveCfg = Release|Win32
 		{62A232AB-1F0C-490C-B9C7-82F38DC4842D}.Release|x86.Build.0 = Release|Win32
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Debug|x64.ActiveCfg = Debug|x64
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Debug|x64.Build.0 = Debug|x64
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Debug|x86.ActiveCfg = Debug|Win32
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Debug|x86.Build.0 = Debug|Win32
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Release|x64.ActiveCfg = Release|x64
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Release|x64.Build.0 = Release|x64
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Release|x86.ActiveCfg = Release|Win32
+		{5E5CDB0B-6112-47B6-83F4-D5C7E7C3D268}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

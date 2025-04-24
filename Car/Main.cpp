@@ -1,5 +1,13 @@
 ﻿#include<iostream>
-using namespace std;
+#include<conio.h>
+#include<Windows.h>
+#include<thread>
+using std::cin;
+using std::cout;
+using std::endl;
+
+#define Enter		13
+#define Escape		27
 
 #define MIN_TANK_CAPACITY 20
 #define MAX_TANK_CAPACITY 120
@@ -101,6 +109,92 @@ public:
 	}
 };
 
+#define MAX_SPEED_LOWER_LIMIT	130
+#define MAX_SPEED_HIGHER_LIMIT	408
+class Car
+{
+	Engine engine;
+	Tank tank;
+	int speed;
+	const int MAX_SPEED;
+	bool driver_inside;
+	struct
+	{
+		std::thread panel_thread;
+	}threads_container; //эта структура не имеет имени и реализует только один экземпляр
+public:
+	Car(double consumption, int capacity, int max_speed = 250) :
+		MAX_SPEED
+		(
+			max_speed < MAX_SPEED_LOWER_LIMIT ? MAX_SPEED_LOWER_LIMIT :
+			max_speed > MAX_SPEED_HIGHER_LIMIT ? MAX_SPEED_HIGHER_LIMIT :
+			max_speed
+		),
+		engine(consumption),
+		tank(capacity),
+		speed(0)
+	{
+		driver_inside = false;
+		cout << "Your car is ready to go, press 'Enter' to get in ;-)" << endl;
+	}
+	~Car()
+	{
+		cout << "The car is over" << endl;
+	}
+	void get_in()
+	{
+		driver_inside = true;
+		threads_container.panel_thread = std::thread(&Car::panel, this);
+		//panel();
+	}
+	void get_out()
+	{
+		driver_inside = false;
+		if (threads_container.panel_thread.joinable())threads_container.panel_thread.join();
+		system("CLS");
+		cout << "You are out of the Car";
+	}
+	void control()
+	{
+		char key = 0;
+		do
+		{
+			key = _getch();
+			switch (key)
+			{
+			case Enter:
+				driver_inside ? get_out() : get_in();
+				break;
+			case 'F':case 'f':
+				double fuel;
+				cout << "Введите объем топлива: "; cin >> fuel;
+				tank.fill(fuel);
+				break;
+			case Escape: 
+				get_out();
+			}
+		} while (key != Escape);
+	}
+	void panel()
+	{
+		while (driver_inside)
+		{
+			system("CLS");
+			cout << "Fuel level: " << tank.get_fuel_level() << " liters\n";
+			cout << "Engine is " << (engine.started() ? "started" : "stopped") << endl;
+			cout << "Speed:\t" << speed << " km/h\n";
+			Sleep(100);
+		}
+	}
+	void info()const
+	{
+		engine.info();
+		tank.info();
+		cout << "Speed:   " << speed << " km/h\n";
+		cout << "MaxSpeed:" << MAX_SPEED << " km/h\n";
+	}
+};
+
 //#define TANK_CHECK
 //#define ENGINE_CHECK
 void main()
@@ -122,5 +216,6 @@ void main()
 	engine.info();
 #endif // ENGINE_CHECK
 
-
+	Car bmw(10, 80, 270);
+	bmw.control();
 }
