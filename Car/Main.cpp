@@ -102,6 +102,36 @@ public:
 	{
 		cout << "Engine is over" << endl;
 	}
+	void update_consumption(int speed)
+	{
+		double ratio = CONSUMPTION / BASE_CONSUMPTION;
+
+		if (speed <= 60)consumption_per_second = DEFAULT_CONSUMPTION_PER_SECOND;
+		else if (speed <= 100)
+		{
+			double factor = 1.0 + 0.5 * (speed - 60) / 40.0;
+			consumption_per_second = DEFAULT_CONSUMPTION_PER_SECOND * factor * ratio;
+		}
+		else if (speed <= 140)
+		{
+			double factor = 1.5 + 0.5 * (speed - 100) / 60.0;
+			consumption_per_second = DEFAULT_CONSUMPTION_PER_SECOND * factor * ratio;
+		}
+		else if (speed <= 200)
+		{
+			double factor = 2.0 + 1.0 * (speed - 140) / 60.0;
+			consumption_per_second = DEFAULT_CONSUMPTION_PER_SECOND * factor * ratio;
+		}
+		else if (speed <= 250)
+		{
+			double factor = 3.0 + 1.0 * (speed - 200) / 50.0;
+			consumption_per_second = DEFAULT_CONSUMPTION_PER_SECOND * factor * ratio;
+		}
+		else
+		{
+			consumption_per_second = DEFAULT_CONSUMPTION_PER_SECOND * 4.0 * ratio;
+		}
+	}
 	void start()
 	{
 		is_started = true;
@@ -190,6 +220,7 @@ public:
 		if (driver_inside && engine.started())
 		{
 			speed += acceleration;
+			engine.update_consumption(speed);
 			if (!threads_container.free_wheeling_thread.joinable())
 				threads_container.free_wheeling_thread = std::thread(&Car::free_wheeling, this);
 			if (speed > MAX_SPEED)speed = MAX_SPEED;
@@ -201,7 +232,8 @@ public:
 		if (driver_inside)
 		{
 			speed -= acceleration;
-			if (speed < 0)speed = 0;
+			engine.update_consumption(speed);
+			if (speed <= 0)speed = 0;
 			std::this_thread::sleep_for(1s);
 		}
 	}
@@ -244,6 +276,7 @@ public:
 	{
 		while (--speed > 0)
 		{
+			engine.update_consumption(speed);
 			if (speed < 0)speed = 0;
 			std::this_thread::sleep_for(1s);
 		}
@@ -269,6 +302,7 @@ public:
 				SetConsoleTextAttribute(hConsole, 0x07);
 			}
 			cout << endl;
+			cout << "Consumption per second: " << engine.get_consumption_per_second() << endl;
 			cout << "Engine is " << (engine.started() ? "started" : "stopped") << endl;
 			cout << "Speed:\t" << speed << " km/h\n";
 			Sleep(100);
